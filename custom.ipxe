@@ -1,60 +1,36 @@
 #!ipxe
+###
+### netboot.xyz-custom menu example
+###
 
-# Microsoft Windows
-# https://www.microsoft.com
+:custom
+clear custom_choice
+menu Installation Menu
+item --gap Linux
+item option_one ${space} Debian 9 (Stretch)
+item option_two ${space} Ubuntu 19.04
+item --gap Windows (WIP)
+item option_three ${space} Server 2016
+item option_four ${space} Server 2019
+choose custom_choice || goto custom_exit
+echo ${cls}
+goto ${custom_choice}
+goto custom_exit
 
-set win_arch x64
-goto ${menu} ||
+:option_one
+kernel https://boot.netboot.xyz/memdisk raw iso
+initrd http://10.0.3.6/debian.iso
+boot || goto custom_exit
 
-:windows
-set os Microsoft Windows
-set win_base_url http://10.0.23.1/windows/server/2019
-clear win_version
-menu ${os} 
-item --gap Installers
-item win_install ${space} Load ${os} Installer...
-item --gap Options:
-item arch_set ${space} Architecture [ ${win_arch} ]
-item url_set ${space} Base URL [ ${win_base_url} ]
-choose win_version || goto windows_exit
-goto ${win_version}
+:option_two
+kernel https://boot.netboot.xyz/memdisk raw iso
+initrd http://10.0.3.6/ubuntu.iso
+boot || goto custom_exit
 
-:arch_set
-iseq ${win_arch} x64 && set win_arch x86 || set win_arch x64
-goto windows
+:option_three
+echo Chains into another menu...
+chain https://raw.githubusercontent.com/${github_user}/netboot.xyz-custom/master/custom1.ipxe || goto custom
 
-:url_set
-echo Set the HTTP URL of an extracted Windows ISO without the trailing slash:
-echo e.g. http://www.mydomain.com/windows
-echo
-echo -n URL: ${} && read win_base_url
-echo
-echo netboot.xyz will attempt to load the following files:
-echo ${win_base_url}/bootmgr
-echo ${win_base_url}/boot/bcd
-echo ${win_base_url}/boot/boot.sdi
-echo ${win_base_url}/sources/boot.wim
-echo
-prompt Press any key to return to Windows Menu...
-goto windows
-
-:win_install
-isset ${win_base_url} && goto boot || echo URL not set... && goto url_set
-
-:boot
-kernel http://${boot_domain}/wimboot
-initrd ${win_base_url}/bootmgr bootmgr
-initrd ${win_base_url}/boot/bcd bcd
-initrd ${win_base_url}/boot/boot.sdi boot.sdi
-initrd ${win_base_url}/sources/boot.wim boot.wim
-md5sum wimboot
-iseq ${img_sigs_enabled} true && goto verify_sigs || goto skip_sigs
-:verify_sigs
-echo
-echo Checking wimboot signature...
-imgverify wimboot ${sigs}wimboot.sig || goto error
-:skip_sigs
-boot
-
-:windows_exit
-exit 0
+:custom_exit
+chain utils.ipxe
+exit
