@@ -21,9 +21,7 @@ chain http://boot.ipxe.org/demo/boot.php
 boot || goto custom_exit
 
 :option_two
-kernel https://boot.netboot.xyz/memdisk raw iso
-initrd http://10.0.23.1/iso/ubuntu/19.04/install.iso
-boot || goto custom_exit
+chain https://github.com/wareing/netboot.xyz/master/src/ubuntu.ipxe
 
 :option_three
 echo Other Boot Options...
