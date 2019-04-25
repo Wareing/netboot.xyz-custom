@@ -15,7 +15,7 @@ goto ${custom_choice}
 goto custom_exit
 
 :option_one
-chain https://github.com/wareing/netboot.xyz/master/src/windows.ipxe
+chain http://10.0.23.1/ipxe/windows.ipxe
 boot || goto custom_exit
 
 :option_two
