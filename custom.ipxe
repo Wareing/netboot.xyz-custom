@@ -5,27 +5,25 @@
 
 :custom
 clear custom_choice
-menu This is a Test Menu
-item --gap This is the first sub menu
-item option_one ${space} iPXE Demo Image
-item option_two ${space} Ubuntu ISO
-item --gap This is a second sub menu
-item option_three ${space} Loads more boot options...
+menu Windows Installer
+item --gap Server 2019
+item option_one ${space} Datacenter Install
+item option_two ${space} Standard Install
 choose custom_choice || goto custom_exit
 echo ${cls}
 goto ${custom_choice}
 goto custom_exit
 
 :option_one
-chain http://boot.ipxe.org/demo/boot.php
+chain https://github.com/wareing/netboot.xyz/master/src/windows.ipxe
 boot || goto custom_exit
 
 :option_two
-chain https://github.com/wareing/netboot.xyz/master/src/ubuntu.ipxe
+goto custom_exit
 
-:option_three
-echo Other Boot Options...
-chain https://raw.githubusercontent.com/${github_user}/netboot.xyz-custom/master/bootoptions.ipxe || goto custom
+#:option_three
+#echo Other Boot Options...
+#chain https://raw.githubusercontent.com/${github_user}/netboot.xyz-custom/master/bootoptions.ipxe || goto custom
 
 :custom_exit
 chain utils.ipxe
