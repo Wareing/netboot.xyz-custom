@@ -15,7 +15,7 @@ goto ${custom_choice}
 goto custom_exit
 
 :option_one
-chain http://10.0.23.1/ipxe/windows.ipxe
+chain http://10.0.23.1/ipxe/windows/windows.ipxe
 boot || goto custom_exit
 
 :option_two
